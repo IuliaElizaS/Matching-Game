@@ -14,19 +14,27 @@
         <header>
             <h1>Matching Game</h1>
         </header>
-
+        <div class="modal">
+            <div class="modalContent">
+                <span class="closeX">&times;</span>
+                <h2>Congratulations you have finished the game!</h2>
+                <p>It took you <span class = "time">00:00</span> minutes, you've made <span class="moves">0</span> moves and you have a rating of <span class ="starsnumber">0</span> stars</p>
+                <p>Feel free to play again.</p>
+            </div>
+        </div>
         <section class="score-panel">
-        	<ul class="stars">
-        		<li><i class="fa fa-star"></i></li>
-        		<li><i class="fa fa-star"></i></li>
-        		<li><i class="fa fa-star"></i></li>
-        	</ul>
+        	  <ul class="stars">
+        	    	<li><i class="fa fa-star"></i></li>
+        		    <li><i class="fa fa-star"></i></li>
+        		    <li><i class="fa fa-star"></i></li>
+        	  </ul>
 
-        	<span class="moves">0</span> Moves
+        	  <span class="moves">0</span> Moves
+            <span class="time">00:00</span> Minutes
 
-            <div class="restart">
-        		<i class="fa fa-repeat"></i>
-        	</div>
+            <div class="reset">
+        	    	<i class="fa fa-repeat"></i>
+        	  </div>
         </section>
 
         <ul class="deck">
@@ -36,7 +44,7 @@
             <li class="card" type="plane">
                 <i class="fa fa-paper-plane-o"></i>
             </li>
-            <li class="card match" type="anchor">
+            <li class="card" type="anchor">
                 <i class="fa fa-anchor"></i>
             </li>
             <li class="card" type="bolt">
@@ -45,7 +53,7 @@
             <li class="card" type="cube">
                 <i class="fa fa-cube"></i>
             </li>
-            <li class="card match" type="anchor">
+            <li class="card" type="anchor">
                 <i class="fa fa-anchor"></i>
             </li>
             <li class="card" type="leaf">
@@ -66,7 +74,7 @@
             <li class="card" type="bomb">
                 <i class="fa fa-bomb"></i>
             </li>
-            <li class="card open show" type="bolt">
+            <li class="card" type="bolt">
                 <i class="fa fa-bolt"></i>
             </li>
             <li class="card" type="bicycle">
