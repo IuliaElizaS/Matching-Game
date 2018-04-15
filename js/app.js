@@ -2,12 +2,15 @@
  * Create a list that holds all of your cards
  */
 let stars = document.querySelectorAll('.stars');
+let starsnumber = document.querySelector('.starsnumber');
 
 let moves = document.querySelector('.moves');
 let movesCount = 0;
 
-const restart = document.querySelector('.restart');
-const cardsDeck = document.querySelectorAll('.deck li');
+let time = document.querySelector('.time');
+
+const reset = document.querySelector('.reset');
+
 
 //creates an array that holds all the cards
 let cards = document.querySelectorAll('.card');
@@ -59,18 +62,19 @@ function shuffle(cardsList) {
 
 
 // on click checks the numbers of showed cards and runs the proper function
-/*function cardClick(){
+function cardClick(){
+    timer();
     if (showedCardsList.length < 2){
-        cardShow();
+      cardShow();
       } else if (showedCardsList.length === 2) {
         score();
         cardMatch();
       }
 }
-*/
+
 // reveals the card
 function cardShow() {
-    evt.target.classList.add('open', 'show');
+    this.classList.add('open', 'show');
     openedCardsList.push(this);
     showedCardsList.push(this);
 }
@@ -78,14 +82,23 @@ function cardShow() {
 // checks if the showed cards match and acts acording to the situation
 function cardMatch() {
     if (showedCardsList[0].type === showedCardsList[1].type){
+      /* initial code ...
       showedCardsList[0].classList.add('match');
-      showedCardsList[1].classList.add('match');
+      showedCardsList[1].classList.add('match');*/
+      for (let showedCards of showedCardsList) {
+          showedCards.classList.add('match');
+      };
       matchedCardsList.push(showedCardsList[0], showedCardsList[1]);
     }else{
+      /* initial code ...
       showedCardsList[0].classList.remove('open', 'show');
       showedCardsList[0].classList.add('close');
       showedCardsList[1].classList.remove('open', 'show');
-      showedCardsList[1].classList.add('close');
+      showedCardsList[1].classList.add('close');*/
+      for (let showedCards of showedCardsList) {
+          showedCards.classList.remove('open', 'show');
+          showedCards.classList.add('close');
+      };
     };
     showedCardsList.splice(0,2);
     gameEnd();
@@ -94,36 +107,73 @@ function cardMatch() {
 // verifies if all cards are matched, if true shows a message and restarts the game
 function gameEnd(){
     if (matchedCardsList.length === cardsList.length) {
-    alert("Congratulations you did it!/n You've matched all 16 cards and your score is " + stars + " and " + movesCount + " moves.");
+    modal();
     gameRestart();
   }
 }
 
-// counts the moves
+// counts the moves and stars
 function score(){
     movesCount ++;
     moves.innerHTML = movesCount;
+    if (movesCount <= 10){
+       starsnumber.innerHTML = 3;
+    } else if (movesCount > 10 && movesCount <= 15) {
+      stars[0].classList.add('hide');
+      starsnumber.innerHTML = 2;
+    } else if (movesCount > 15 && movesCount <= 20) {
+      stars[0].classList.add('hide');
+      stars[1].classList.add('hide');
+      starsnumber.innerHTML = 1;
+    } else if (movesCount > 20) {
+      stars[0].classList.add('hide');
+      stars[1].classList.add('hide');
+      stars[2].classList.add('hide');
+      starsnumber.innerHTML = 0;
+    }
 }
 
 // restarts the game
 function gameRestart(){
     cards.classList.remove('open', 'show', 'match', 'close');
+    stars.classList.remove('hide');
     showedCardsList.splice(0,2);
     matchedCardsList.splice(0,17);
     openedCardsList.splice(0,17);
     shuffle(cardsList);
     movesCount = 0;
+    time.innerHTML = '00:00';
 }
 
-// adds an eventEventListener for all the cards
-cardsDeck.addEventListener('click', function (evt) {
-  if (showedCardsList.length < 2){
-    cardShow();
-  } else if (showedCardsList.length === 2) {
-    score();
-    cardMatch();
-  }
-});
+//runs the timer
+function timer(){
+  let sec = 00;
+  let min = 00;
+  setInterval(function(){
+    sec++;
+  }, 1000);
+  setInterval(function(){
+    min++;
+  }, 60000);
+  time.innerHTML = min +':'+ sec;
+}
+
+//implements the modal - adapted source:https://www.w3schools.com/howto/howto_css_modals.asp
+function modal() {
+    const modal = document.querySelector('.modal');
+    const closeX = document.querySelector('.closeX');
+    modal.style.display = "block";
+    //when the user clicks on (x), closes the modal
+    closeX.onclick = function() {
+        modal.style.display = "none";
+      }
+}
+
+
+// adds an eventEventListener for click on the cards
+for (i=0; i< cardsList.length; i++){
+    cardsList[i].addEventListener('click', cardClick);
+}
 
 //adds EventListener to the restart arrow
-restart.addEventListener('click', gameRestart);
+reset.addEventListener('click', gameRestart);
