@@ -1,13 +1,19 @@
 /*
  * Create a list that holds all of your cards
  */
+
+  //creates an array that holds all the cards
 let stars = document.querySelectorAll('.stars');
+let starsList = Array.from(stars);
 let starsnumber = document.querySelector('.starsnumber');
 
 let moves = document.querySelector('.moves');
 let movesCount = 0;
 
 let time = document.querySelector('.time');
+let sec = 0;
+let min = 0;
+let timer = min +'minutes '+ sec + 'seconds';
 
 const reset = document.querySelector('.reset');
 
@@ -15,10 +21,6 @@ const reset = document.querySelector('.reset');
 //creates an array that holds all the cards
 let cards = document.querySelectorAll('.card');
 let cardsList = Array.from(cards);
-
-//creates an array that holds all the opened cards
-let openedCards = document.querySelectorAll('.open');
-let openedCardsList = Array.from(openedCards);
 
 //creates an array that holds all the showed cards. Should be max 2 cards
 let showedCards = document.querySelectorAll('.show');
@@ -63,42 +65,35 @@ function shuffle(cardsList) {
 
 // on click checks the numbers of showed cards and runs the proper function
 function cardClick(){
-    timer();
+    timecount();
     if (showedCardsList.length < 2){
-      cardShow();
-      } else if (showedCardsList.length === 2) {
-        score();
+        cardShow.call(this);
+    } else if (showedCardsList.length === 2) {
         cardMatch();
-      }
+    }
 }
 
 // reveals the card
 function cardShow() {
-    this.classList.add('open', 'show');
-    openedCardsList.push(this);
+    this.classList.add('show');
     showedCardsList.push(this);
+    if (this.classList.contains('close') === true){
+      this.classList.remove('close');
+    }
 }
 
 // checks if the showed cards match and acts acording to the situation
 function cardMatch() {
+    score();
     if (showedCardsList[0].type === showedCardsList[1].type){
-      /* initial code ...
-      showedCardsList[0].classList.add('match');
-      showedCardsList[1].classList.add('match');*/
-      for (let showedCards of showedCardsList) {
-          showedCards.classList.add('match');
-      };
-      matchedCardsList.push(showedCardsList[0], showedCardsList[1]);
+      for (let showedCard of showedCardsList) {
+          showedCard.classList.replace('show','match');
+          matchedCardsList.push(showedCard);
+      }
     }else{
-      /* initial code ...
-      showedCardsList[0].classList.remove('open', 'show');
-      showedCardsList[0].classList.add('close');
-      showedCardsList[1].classList.remove('open', 'show');
-      showedCardsList[1].classList.add('close');*/
       for (let showedCards of showedCardsList) {
-          showedCards.classList.remove('open', 'show');
-          showedCards.classList.add('close');
-      };
+          showedCards.classList.replace('show', 'close');
+      }
     };
     showedCardsList.splice(0,2);
     gameEnd();
@@ -112,50 +107,55 @@ function gameEnd(){
   }
 }
 
-// counts the moves and stars
+/*
+* counts the moves and stars
+  - increases the moves by 1 each time 2 cards are turned
+  - star rating criteria: 3 stars for max 10 moves, 2 stars for 11-15 moves, 1 star for 16-20 moves, no star for more than 20 moves
+*/
 function score(){
     movesCount ++;
     moves.innerHTML = movesCount;
     if (movesCount <= 10){
-       starsnumber.innerHTML = 3;
+       starsnumber.innerText = '3';
     } else if (movesCount > 10 && movesCount <= 15) {
-      stars[0].classList.add('hide');
-      starsnumber.innerHTML = 2;
+        starsList[2].classList.add('hide');
+        starsnumber.innerText = '2';
     } else if (movesCount > 15 && movesCount <= 20) {
-      stars[0].classList.add('hide');
-      stars[1].classList.add('hide');
-      starsnumber.innerHTML = 1;
+        starsList[1].classList.add('hide');
+        starsnumber.innerText = '1';
     } else if (movesCount > 20) {
-      stars[0].classList.add('hide');
-      stars[1].classList.add('hide');
-      stars[2].classList.add('hide');
-      starsnumber.innerHTML = 0;
+        starsList[0].classList.add('hide');
+        starsnumber.innerText ='0';
     }
 }
 
 // restarts the game
 function gameRestart(){
-    cards.classList.remove('open', 'show', 'match', 'close');
-    stars.classList.remove('hide');
+    for (let card of cardsList) {
+        card.classList.remove('show', 'match', 'close');
+    }
+    for (let star of starsList){
+        star.classList.remove('hide');
+    }
     showedCardsList.splice(0,2);
     matchedCardsList.splice(0,17);
-    openedCardsList.splice(0,17);
     shuffle(cardsList);
-    movesCount = 0;
-    time.innerHTML = '00:00';
+    moves.innerHTML = '0';
+    min = 0;
+    sec = 0;
+    time.innerHTML = timer;
 }
 
 //runs the timer
-function timer(){
-  let sec = 00;
-  let min = 00;
+function timecount(){
   setInterval(function(){
     sec++;
+    if (sec === 59){
+      min++;
+      sec = 0;
+    };
+    time.innerHTML = timer;
   }, 1000);
-  setInterval(function(){
-    min++;
-  }, 60000);
-  time.innerHTML = min +':'+ sec;
 }
 
 //implements the modal - adapted source:https://www.w3schools.com/howto/howto_css_modals.asp
@@ -169,11 +169,21 @@ function modal() {
       }
 }
 
-
-// adds an eventEventListener for click on the cards
+/*
+*adds an eventEventListener for click on the cards
+- because cardsList is an array, a for loop is needed to iterate through the cards
+- the anonymous function inside the EventListener creates a clousure and keeps the 'this' value
+- .call() function passes 'this' value to the cardClick function
+*/
 for (i=0; i< cardsList.length; i++){
-    cardsList[i].addEventListener('click', cardClick);
+    cardsList[i].addEventListener('click', function (){
+        cardClick.call(this);
+      });
 }
 
 //adds EventListener to the restart arrow
-reset.addEventListener('click', gameRestart);
+reset.addEventListener('click', function (){
+    reset.style.transform = "rotate(360deg)";
+    reset.style.transition = "transform 0.5s linear";
+    gameRestart();
+})
