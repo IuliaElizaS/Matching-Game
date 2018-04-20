@@ -1,0 +1,29 @@
+@media screen and (min-width: 0px) and (max-width: 720px ) {
+  .container {
+    max-width: 100%;
+    margin: auto;
+  }
+
+  .deck {
+    max-width: 95%;
+  }
+
+  .card{
+    max-width: 22%;
+    max-height: 22%;
+  }
+
+  .score-panel {
+    max-width: 85%;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .show, .match {
+    font-size: 2.3em;
+  }
+
+  .reset {
+    padding-left: 2em;
+  }
+}
