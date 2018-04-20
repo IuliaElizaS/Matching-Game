@@ -3,14 +3,14 @@
  */
 
   //creates an array that holds all the cards
-let stars = document.querySelectorAll('.stars');
+let stars = document.querySelectorAll('.stars li');
 let starsList = Array.from(stars);
 let starsnumber = document.querySelector('.starsnumber');
 
-let moves = document.querySelector('.moves');
+let moves = document.querySelectorAll('.moves');
 let movesCount = 0;
 
-let time = document.querySelector('.time');
+let time = document.querySelectorAll('.time');
 let sec = 0;
 let min = 0;
 let timer = min +'minutes '+ sec + 'seconds';
@@ -114,7 +114,7 @@ function gameEnd(){
 */
 function score(){
     movesCount ++;
-    moves.innerHTML = movesCount;
+    moves.innerText = movesCount;
     if (movesCount <= 10){
        starsnumber.innerText = '3';
     } else if (movesCount > 10 && movesCount <= 15) {
@@ -140,28 +140,28 @@ function gameRestart(){
     showedCardsList.splice(0,2);
     matchedCardsList.splice(0,17);
     shuffle(cardsList);
-    moves.innerHTML = '0';
+    moves.innerText = '0';
     min = 0;
     sec = 0;
-    time.innerHTML = timer;
+    time.innerText = timer;
 }
 
 //runs the timer
 function timecount(){
   setInterval(function(){
     sec++;
-    if (sec === 59){
+    if (sec === 60){
       min++;
       sec = 0;
     };
-    time.innerHTML = timer;
+    time.innerText = timer;
   }, 1000);
 }
 
 //implements the modal - adapted source:https://www.w3schools.com/howto/howto_css_modals.asp
 function modal() {
     const modal = document.querySelector('.modal');
-    const closeX = document.querySelector('.closeX');
+    const closeX = document.querySelectorAll('.closeX');
     modal.style.display = "block";
     //when the user clicks on (x), closes the modal
     closeX.onclick = function() {
