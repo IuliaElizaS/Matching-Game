@@ -73,6 +73,7 @@ h1 {
     background: #0073e5;
     border: 3px solid #fff;
     cursor: default;
+    pointer-events: none; /* disables mouse events for cards with this class */
     font-size: 33px;
 }
 
@@ -98,7 +99,7 @@ h1 {
 
 .score-panel {
     text-align: left;
-    width: 345px;
+    width: 360px;
     margin-bottom: 10px;
 }
 
