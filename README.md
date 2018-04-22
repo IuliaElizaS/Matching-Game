@@ -29,9 +29,9 @@ The moves and stars count system:
 You can try the game on https://iuliaelizas.github.io/Matching-Game/
 
 ## Sources
- the starter code - Udacity
- the modal - adapted source https://www.w3schools.com/howto/howto_css_modals.asp
- the shuffle function - http://stackoverflow.com/a/2450976
+ - the starter code: Udacity
+ - the modal: adapted from https://www.w3schools.com/howto/howto_css_modals.asp
+ - the shuffle function: http://stackoverflow.com/a/2450976
 
 ## Thanks
 
