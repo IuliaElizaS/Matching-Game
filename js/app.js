@@ -13,6 +13,7 @@ let movesCount = 0;
 let timer = document.querySelectorAll('.time');
 let sec = 0;
 let min = 0;
+let counter;
 
 const reset = document.querySelector('.reset');
 
@@ -62,23 +63,17 @@ function shuffle(cardsList) {
  */
 
 
-// on click checks the numbers of showed cards and runs the proper function
-function cardClick(){
-    timecount();
-    if (showedCardsList.length < 2){
-        cardShow.call(this); //.call() function passes 'this' value from the cardClick function to the cardShow function
-    } else if (showedCardsList.length === 2) {
-        cardMatch();
-    }
-}
-
-// reveals the card
+// on click reveals the card checks the numbers of showed cards in order to call cardMatch()
 function cardShow() {
     this.classList.add('show');
     showedCardsList.push(this);
     if (this.classList.contains('close') === true){
         this.classList.remove('close');
     }
+    //when 2 cards are opened calls cardMatch() function
+    if (showedCardsList.length === 2){
+       cardMatch();
+   }
 }
 
 // checks if the showed cards match and acts acording to the situation
@@ -86,21 +81,28 @@ function cardMatch() {
     score();
     if (showedCardsList[0].type === showedCardsList[1].type){
         for (let showedCard of showedCardsList) {
-            showedCard.classList.replace('show','match');
+            //delays the class change with 1s, so that the cards can be seen
+            setTimeout(function(){
+                showedCard.classList.replace('show','match');
+            },1000);
             matchedCardsList.push(showedCard);
         }
     }else{
         for (let showedCards of showedCardsList) {
-            showedCards.classList.replace('show', 'close');
+            setTimeout(function(){
+                showedCards.classList.replace('show', 'close');
+            },1000);
         }
     };
     showedCardsList.splice(0,2);
-    gameEnd();
+    setTimeout(gameEnd,1500);
 }
 
 // verifies if all cards are matched, if true shows a message and restarts the game
 function gameEnd(){
     if (matchedCardsList.length === cardsList.length) {
+    //stops the timer
+    clearInterval(counter,1000);
     modal();
     gameRestart();
   }
@@ -142,28 +144,29 @@ function gameRestart(){
     matchedCardsList.splice(0,17);
     shuffle(cardsList);
     for (let move of moves) {
-      move.innerText = 0;
+        move.innerText = 0;
     }
     min = 0;
     sec = 0;
     for (let time of timer) {
-      time.innerText = min +' minutes '+ sec + ' seconds';
+        time.innerText = min +' minutes '+ sec + ' seconds';
     }
 }
 
 //runs the timer
 function timecount(){
-  setInterval(function(){
-    sec++;
-    if (sec === 60){
-      min++;
-      sec = 0;
-    };
-    for (let time of timer) {
-      time.innerText = min +' minutes '+ sec + ' seconds';
-    }
-  }, 1000);
-}
+    counter = setInterval(function(){
+        sec++;
+        if (sec === 60){
+            min++;
+            sec = 0;
+        };
+        for (let time of timer) {
+            time.innerText = min +' minutes '+ sec + ' seconds';
+        }
+    }, 1000);
+};
+timecount();
 
 //implements the modal - adapted source:https://www.w3schools.com/howto/howto_css_modals.asp
 function modal() {
@@ -184,8 +187,8 @@ function modal() {
 */
 for (i=0; i< cardsList.length; i++){
     cardsList[i].addEventListener('click', function (){
-        cardClick.call(this);
-      });
+        cardShow.call(this);
+    });
 }
 
 //adds EventListener to the restart arrow
