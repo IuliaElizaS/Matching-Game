@@ -2,17 +2,17 @@
  * Create a list that holds all of your cards
  */
 
-  //creates an array that holds all the cards
+  //creates an array that holds all the stars
 let stars = document.querySelectorAll('.stars li');
 let starsList = Array.from(stars);
 let starsnumber = document.querySelector('.starsnumber');
 
 let moves = document.querySelectorAll('.moves');
+let movesList = Array.from(moves);
 let movesCount = 0;
 
-let timer = document.querySelectorAll('.time');
-let sec = 0;
-let min = 0;
+let timer = document.querySelector('.time');
+let mTime = document.querySelector('.modalTime');
 let counter;
 
 const reset = document.querySelector('.reset');
@@ -38,17 +38,23 @@ let matchedCardsList = Array.from(matchedCards);
  */
 
 // Shuffle function from http://stackoverflow.com/a/2450976
-function shuffle(cardsList) {
-    let currentIndex = cardsList.length, temporaryValue, randomIndex;
+function shuffle() {
+  let currentIndex = cardsList.length, temporaryValue, randomIndex;
 
-    while (currentIndex !== 0) {
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-        temporaryValue = cardsList[currentIndex];
-        cardsList[currentIndex] = cardsList[randomIndex];
-        cardsList[randomIndex] = temporaryValue;
-    }
-    return cardsList;
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = cardsList[currentIndex];
+    cardsList[currentIndex] = cardsList[randomIndex];
+    cardsList[randomIndex] = temporaryValue;
+  }
+
+  return cardsList;
 }
 
 /*
@@ -93,7 +99,7 @@ function cardMatch() {
                 showedCards.classList.replace('show', 'close');
             },1000);
         }
-    };
+    }
     showedCardsList.splice(0,2);
     setTimeout(gameEnd,1500);
 }
@@ -104,8 +110,7 @@ function gameEnd(){
     //stops the timer
     clearInterval(counter,1000);
     modal();
-    gameRestart();
-  }
+    }
 }
 
 /*
@@ -115,9 +120,8 @@ function gameEnd(){
 */
 function score(){
     movesCount ++;
-    for (let move of moves) {
-        move.innerText = movesCount;
-    }
+    movesList[0].innerText = movesCount;
+    movesList[1].innerText = movesCount;
     if (movesCount <= 10){
        starsnumber.innerText = '3';
     } else if (movesCount > 10 && movesCount <= 15) {
@@ -134,39 +138,28 @@ function score(){
 
 // restarts the game
 function gameRestart(){
-    for (let card of cardsList) {
-        card.classList.remove('show', 'match', 'close');
-    }
-    for (let star of starsList){
-        star.classList.remove('hide');
-    }
-    showedCardsList.splice(0,2);
-    matchedCardsList.splice(0,17);
-    shuffle(cardsList);
-    for (let move of moves) {
-        move.innerText = 0;
-    }
-    min = 0;
-    sec = 0;
-    for (let time of timer) {
-        time.innerText = min +' minutes '+ sec + ' seconds';
-    }
+    //the easiest way to reset the game is to reload the page
+    location.reload(true);
+    shuffle();
 }
 
 //runs the timer
-function timecount(){
+function timeCount(){
+    let sec = 0;
+    let min = 0;
     counter = setInterval(function(){
         sec++;
         if (sec === 60){
             min++;
             sec = 0;
         };
-        for (let time of timer) {
-            time.innerText = min +' minutes '+ sec + ' seconds';
-        }
+        timer.innerText = min +' minutes '+ sec + ' seconds';
+        mTime.innerText = min +' minutes '+ sec + ' seconds';
     }, 1000);
+    //removes the EventListener so that the function will run only on the first click
+    document.querySelector('.deck').removeEventListener('click', timeCount);
 };
-timecount();
+
 
 //implements the modal - adapted source:https://www.w3schools.com/howto/howto_css_modals.asp
 function modal() {
@@ -176,7 +169,8 @@ function modal() {
     //when the user clicks on the Restart button, closes the modal and restarts the game
     button.onclick = function() {
         modal.style.display = "none";
-      }
+        gameRestart();
+    }
 }
 
 /*
@@ -191,9 +185,12 @@ for (i=0; i< cardsList.length; i++){
     });
 }
 
+//starts the timer when the cards deck is clicked
+document.querySelector('.deck').addEventListener('click', timeCount);
+
 //adds EventListener to the restart arrow
 reset.addEventListener('click', function (){
-    reset.style.transform = "rotate(360deg)";
+    reset.style.transform = "rotate(180deg)";
     reset.style.transition = "transform 0.5s linear";
     gameRestart();
 })
