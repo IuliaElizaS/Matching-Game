@@ -17,10 +17,13 @@ let counter;
 
 const reset = document.querySelector('.reset');
 
+let deck = document.querySelector('.deck');
 
 //creates an array that holds all the cards
 let cards = document.querySelectorAll('.card');
 let cardsList = Array.from(cards);
+//array for the shuffledCards.
+
 
 //creates an array that holds all the showed cards. Should be max 2 cards
 let showedCards = document.querySelectorAll('.show');
@@ -37,25 +40,37 @@ let matchedCardsList = Array.from(matchedCards);
  *   - add each card's HTML to the page
  */
 
-// Shuffle function from http://stackoverflow.com/a/2450976
-function shuffle() {
-  let currentIndex = cardsList.length, temporaryValue, randomIndex;
+// adapted Shuffle function from http://stackoverflow.com/a/2450976
+function shuffle(cardsList) {
+    let currentIndex = cardsList.length, temporaryValue, randomIndex;
 
-  // While there remain elements to shuffle...
-  while (0 !== currentIndex) {
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
 
-    // Pick a remaining element...
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex -= 1;
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
 
-    // And swap it with the current element.
-    temporaryValue = cardsList[currentIndex];
-    cardsList[currentIndex] = cardsList[randomIndex];
-    cardsList[randomIndex] = temporaryValue;
-  }
-
-  return cardsList;
+        // And swap it with the current element.
+        temporaryValue = cardsList[currentIndex];
+        cardsList[currentIndex] = cardsList[randomIndex];
+        cardsList[randomIndex] = temporaryValue;
+      }
+      return cardsList;
 }
+
+//implements the shuffle function and changes the card layout
+function newLayout (){
+  shuffle(cardsList); //OBS. the shuffled cards need to be added to the deck
+  //empty the deck
+  deck.innerHTML = '';
+  //loops over each card creates it's HTML and adds it to the deck
+  for (let card of cardsList){
+      deck.appendChild(card);
+    }
+};
+//by calling the function here, the cards layout is changed every time the app is opened or the gameRestart function relods the page
+newLayout();
 
 /*
  * set up the event listener for a card. If a card is clicked:
@@ -140,7 +155,6 @@ function score(){
 function gameRestart(){
     //the easiest way to reset the game is to reload the page
     location.reload(true);
-    shuffle();
 }
 
 //runs the timer
@@ -186,11 +200,11 @@ for (i=0; i< cardsList.length; i++){
 }
 
 //starts the timer when the cards deck is clicked
-document.querySelector('.deck').addEventListener('click', timeCount);
+deck.addEventListener('click', timeCount);
 
 //adds EventListener to the restart arrow
 reset.addEventListener('click', function (){
     reset.style.transform = "rotate(180deg)";
     reset.style.transition = "transform 0.5s linear";
     gameRestart();
-})
+  })
